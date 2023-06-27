@@ -10,6 +10,8 @@
 #board{
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
 }
 
 .box{
@@ -51,14 +53,42 @@
 }
 
 .leaderboard{
-    position: fixed;
-    bottom: 50px;
-    left: 50%;
-    transform: translateX(-50%);
+    margin: 10px auto;
     width: 600px;
     height: 150px;
-    background-color: rgba(0, 0, 0, 0.303);
+    background-color: rgba(0, 0, 0, 0.575);
     border-radius: 10px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    color: white;
+}
+
+.leaderboard .best > p{
+  font-weight: bold;
+  font-size: 1.1em;
+  text-align: center;
+  margin-bottom: 0.2em;
+}
+
+.leaderboard .timer{
+    text-align: center;
+    font-size: 1.7em;
+}
+
+#digits.score-result{
+    color: gold;
+    animation: pulse 0.6s infinite ease alternate;
+    display: block;
+}
+
+@keyframes pulse {
+    from {
+        transform: scale(1);
+    }
+    to{
+        transform: scale(1.05);
+    }
 }
 
 @keyframes appear{
