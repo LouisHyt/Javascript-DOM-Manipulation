@@ -5,53 +5,33 @@ box.classList.add("box");
 
 
 const arrayScore = JSON.parse(localStorage.getItem("scores")) || [];
-
-let centi = 0;
-let dixi = 0;
-let sec = 0;
-let min = 0;
-let secFormat;
-let score;
-let chronoTimeout;
+let chrono;
+let timerValue;
 
 displayScore();
-
 startGame();
 
-function chrono(){
-    //Centièmes de secondes
-    digits.classList.remove("score-result");
-    setInterval(() => {
-        centi++;
-        if(centi > 9) {
-            centi = 0;
+function startGame(){
+    digits.classList.remove('score-result');
+    let nbBoites = prompt("Veuillez insérer le nombre de boite souhaité !") || 10;
+    //Timer
+    timerValue = 0;
+    chrono = setInterval(() => {
+        timerValue++;
+        let timerValueFormat = timerValue.toString().padStart(4, '0').replace(/^(.{2})/, "$1:");
+        digits.textContent = timerValueFormat;
+        if(timerValue >= 60000){
+            timerValue = 0;
+            clearInterval(chrono);
+            showReaction('error', this);
+            nb = 1;
+            board.querySelectorAll(".box-clicked").forEach(elem => {
+                elem.classList.remove("box-clicked")
+            })
+            shuffleChildren(board);
         }
     }, 10)
 
-    //Dixieme de secondes
-    dixi++;
-    dixi*10;
-    if(dixi > 9) {
-        dixi = 0;
-        sec++
-    }
-
-    //Secondes
-    if(sec < 10){
-        secFormat = "0" + sec;
-    } else {
-        secFormat = sec;
-    }
-
-    score = secFormat + dixi + centi;
-    digits.textContent = score;
-    //Réexecute tous les dixieme de seconde
-    chronoTimeout = setTimeout(chrono, 100)
-}
-
-function startGame(){
-    nbBoites = prompt("Veuillez insérer le nombre de boite souhaité !") || 10;
-    chrono();
     let nb = 1;
     for(let i = 1; i <= nbBoites; i++){
         let newBox = box.cloneNode();
@@ -87,17 +67,16 @@ function startGame(){
 }
 
 function handleEndGame(){
-    clearTimeout(chronoTimeout);
-    digits.classList.add("score-result");
+
+    clearInterval(chrono);
     board.querySelectorAll(".box").forEach(elem => {
         showReaction("success", elem);
     })
 
-    arrayScore.push(parseInt(score));
-    arrayScore.sort((a, b) => {
-        return a - b
-    })
-    if(arrayScore.length > 3) arrayScore.pop();
+    digits.classList.add('score-result');
+    arrayScore.push(timerValue);
+    arrayScore.sort((a,b) => a - b);
+    if(arrayScore.length > 3) arrayScore.pop()
     localStorage.setItem("scores", JSON.stringify(arrayScore));
     displayScore();
 }
@@ -126,12 +105,12 @@ function showReaction(type, clickedBox){
 }
 
 function displayScore(){
+    console.log(arrayScore)
     for(let i = 0; i < 3; i++){
         if(!arrayScore[i]){
-            document.querySelector(`.score${i + 1}`).textContent = "N°" +i+ " : " + "Indéfini";
+            document.querySelector(`.score${i + 1} .value`).textContent = "En attente..";
         } else {
-            document.querySelector(`.score${i + 1}`).textContent = "N°" +i+ " : " + arrayScore[i];
-            
+            document.querySelector(`.score${i + 1} .value`).textContent = arrayScore[i].toString().padStart(4, '0').replace(/^(.{2})/, "$1:");
         }
-    }5
+    }
 }
