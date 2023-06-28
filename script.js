@@ -18,18 +18,9 @@ function startGame(){
     timerValue = 0;
     chrono = setInterval(() => {
         timerValue++;
+        console.log(timerValue)
         let timerValueFormat = timerValue.toString().padStart(4, '0').replace(/^(.{2})/, "$1:");
         digits.textContent = timerValueFormat;
-        if(timerValue >= 60000){
-            timerValue = 0;
-            clearInterval(chrono);
-            showReaction('error', this);
-            nb = 1;
-            board.querySelectorAll(".box-clicked").forEach(elem => {
-                elem.classList.remove("box-clicked")
-            })
-            shuffleChildren(board);
-        }
     }, 10)
 
     let nb = 1;
